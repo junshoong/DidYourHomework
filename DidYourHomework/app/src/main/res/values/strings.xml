@@ -1,6 +1,7 @@
 <resources>
-    <string name="app_name">Android Week View</string>
+    <string name="app_name">Did Your Homework?</string>
     <string name="action_today">Today</string>
-    <string name="action_day_view">Day view</string>
-    <string name="action_week_view">Week view</string>
+    <string name="next_week">NEXT</string>
+    <!--<string name="action_day_view">Day view</string>-->
+    <string name="prev_week">PREV</string>
 </resources>

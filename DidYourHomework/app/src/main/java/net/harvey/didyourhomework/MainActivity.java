@@ -3,7 +3,6 @@ package net.harvey.didyourhomework;
 import android.graphics.RectF;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -20,10 +19,13 @@ import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final int TYPE_DAY_VIEW = 1;
-    private static final int TYPE_WEEK_VIEW = 2;
+    private static final int TYPE_WEEK_VIEW = 1;
+    private static final int PREV = 1;
+    private static final int THIS = 2;
+    private static final int NEXT = 3;
     private int mWeekViewType = TYPE_WEEK_VIEW;
     private WeekView mWeekView;
+    private Calendar week = Calendar.getInstance();
 
 
     WeekView.MonthChangeListener mMonthChangeListener = new WeekView.MonthChangeListener() {
@@ -59,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
         mWeekView.setMonthChangeListener(mMonthChangeListener);
         // Set long press listener for events.
         mWeekView.setEventLongPressListener(mEventLongPressListener);
-
+        changeWeek(0);
         setupDateTimeInterpreter(false);
     }
 
@@ -83,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
+
     private void setupDateTimeInterpreter(final boolean shortDate) {
         mWeekView.setDateTimeInterpreter(new DateTimeInterpreter() {
             @Override
@@ -109,35 +113,28 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        setupDateTimeInterpreter(id == R.id.action_week_view);
+        setupDateTimeInterpreter(id == R.id.action_today);
         switch (id) {
             case R.id.action_today:
-                mWeekView.goToToday();
-                return true;
-            case R.id.action_day_view:
-                if (mWeekViewType != TYPE_DAY_VIEW) {
-                    item.setChecked(!item.isChecked());
-                    mWeekViewType = TYPE_DAY_VIEW;
-                    mWeekView.setNumberOfVisibleDays(1);
-
-                    // Lets change some dimensions to best fit the view.
-                    mWeekView.setColumnGap((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, getResources().getDisplayMetrics()));
-                    mWeekView.setTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 12, getResources().getDisplayMetrics()));
-                    mWeekView.setEventTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 12, getResources().getDisplayMetrics()));
-                }
-                return true;
-
-            case R.id.action_week_view:
                 if (mWeekViewType != TYPE_WEEK_VIEW) {
                     item.setChecked(!item.isChecked());
                     mWeekViewType = TYPE_WEEK_VIEW;
-                    mWeekView.setNumberOfVisibleDays(5);
-
-                    // Lets change some dimensions to best fit the view.
-                    mWeekView.setColumnGap((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3, getResources().getDisplayMetrics()));
-                    mWeekView.setTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 11, getResources().getDisplayMetrics()));
-                    mWeekView.setEventTextSize((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 11, getResources().getDisplayMetrics()));
                 }
+                changeWeek(THIS);
+                return true;
+            case R.id.action_next_week:
+                if (mWeekViewType != TYPE_WEEK_VIEW) {
+                    item.setChecked(!item.isChecked());
+                    mWeekViewType = TYPE_WEEK_VIEW;
+                }
+                changeWeek(NEXT);
+                return true;
+            case R.id.action_prev_week:
+                if (mWeekViewType != TYPE_WEEK_VIEW) {
+                    item.setChecked(!item.isChecked());
+                    mWeekViewType = TYPE_WEEK_VIEW;
+                }
+                changeWeek(PREV);
                 return true;
         }
 
@@ -146,6 +143,23 @@ public class MainActivity extends AppCompatActivity {
 
     private String getEventTitle(Calendar time) {
         return String.format("Event of %02d:%02d %s/%d", time.get(Calendar.HOUR_OF_DAY), time.get(Calendar.MINUTE), time.get(Calendar.MONTH) + 1, time.get(Calendar.DAY_OF_MONTH));
+    }
+
+    private void changeWeek(int key) {
+        switch (key) {
+            case PREV:
+                week.add(week.DAY_OF_WEEK, -7);
+                break;
+            case THIS:
+                week = Calendar.getInstance();
+                break;
+            case NEXT:
+                week.add(week.DAY_OF_WEEK, 7);
+                break;
+        }
+        week.set(week.DAY_OF_WEEK, Calendar.MONDAY);
+        mWeekView.goToDate(week);
+        mWeekView.goToHour(9);
     }
 }
 

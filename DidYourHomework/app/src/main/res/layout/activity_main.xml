@@ -23,7 +23,8 @@
         app:todayBackgroundColor="#1848adff"
         app:headerColumnBackground="#ffffffff"
         app:todayHeaderTextColor="@color/accent"
-        app:xScrollingSpeed="0"/>
+        app:xScrollingSpeed="0"
+        />
 
 
 </RelativeLayout>
