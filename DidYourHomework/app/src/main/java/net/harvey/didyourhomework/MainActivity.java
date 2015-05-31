@@ -31,12 +31,12 @@ public class MainActivity extends AppCompatActivity {
             ArrayList<WeekViewEvent> events = new ArrayList<WeekViewEvent>();
 
             Calendar startTime = Calendar.getInstance();
-            startTime.set(Calendar.HOUR_OF_DAY, 3);
-            startTime.set(Calendar.MINUTE, 0);
+            startTime.set(Calendar.HOUR_OF_DAY, 10);
+            startTime.set(Calendar.MINUTE, 30);
             startTime.set(Calendar.MONTH, newMonth - 1);
             startTime.set(Calendar.YEAR, newYear);
             Calendar endTime = (Calendar) startTime.clone();
-            endTime.add(Calendar.HOUR, 1);
+            endTime.add(Calendar.HOUR, 2);
             endTime.set(Calendar.MONTH, newMonth - 1);
             WeekViewEvent event = new WeekViewEvent(1, getEventTitle(startTime), startTime, endTime);
             event.setColor(getResources().getColor(R.color.event_color_01));
@@ -155,7 +155,6 @@ public class MainActivity extends AppCompatActivity {
         }
         week.set(week.DAY_OF_WEEK, Calendar.MONDAY);
         mWeekView.goToDate(week);
-        mWeekView.goToHour(9);
     }
 }
 

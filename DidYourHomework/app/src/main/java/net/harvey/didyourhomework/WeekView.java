@@ -74,6 +74,8 @@ public class WeekView extends View {
     private Direction mCurrentFlingDirection = Direction.NONE;
 
     // Attributes and their default values.
+    private int mMinHour = 9;
+    private int mMaxHour = 18;
     private int mHourHeight = 50;
     private int mColumnGap = 10;
     private int mFirstDayOfWeek = Calendar.MONDAY;
@@ -149,7 +151,7 @@ public class WeekView extends View {
                 mScroller.fling((int) mCurrentOrigin.x, 0, (int) (velocityX * mXScrollingSpeed), 0, Integer.MIN_VALUE, Integer.MAX_VALUE, 0, 0);
             }
             else if (mCurrentFlingDirection == Direction.VERTICAL){
-                mScroller.fling(0, (int) mCurrentOrigin.y, 0, (int) velocityY, 0, 0, (int) -(mHourHeight * 24 + mHeaderTextHeight + mHeaderRowPadding * 2 - getHeight()), 0);
+                mScroller.fling(0, (int) mCurrentOrigin.y, 0, (int) velocityY, 0, 0, (int) -(mHourHeight * (mMaxHour-mMinHour) + mHeaderTextHeight + mHeaderRowPadding * 2 - getHeight()), 0);
             }
 
             ViewCompat.postInvalidateOnAnimation(WeekView.this);
@@ -358,18 +360,18 @@ public class WeekView extends View {
         // Do not let the view go above/below the limit due to scrolling. Set the max and min limit of the scroll.
         if (mCurrentScrollDirection == Direction.VERTICAL) {
             if (mCurrentOrigin.y - mDistanceY > 0) mCurrentOrigin.y = 0;
-            else if (mCurrentOrigin.y - mDistanceY < -(mHourHeight * 24 + mHeaderTextHeight + mHeaderRowPadding * 2 - getHeight())) mCurrentOrigin.y = -(mHourHeight * 24 + mHeaderTextHeight + mHeaderRowPadding * 2 - getHeight());
+            else if (mCurrentOrigin.y - mDistanceY < -(mHourHeight * (mMaxHour-mMinHour) + mHeaderTextHeight + mHeaderRowPadding * 2 - getHeight())) mCurrentOrigin.y = -(mHourHeight * (mMaxHour-mMinHour) + mHeaderTextHeight + mHeaderRowPadding * 2 - getHeight());
             else mCurrentOrigin.y -= mDistanceY;
         }
 
         // Draw the background color for the header column.
         canvas.drawRect(0, mHeaderTextHeight + mHeaderRowPadding * 2, mHeaderColumnWidth, getHeight(), mHeaderColumnBackgroundPaint);
 
-        for (int i = 0; i < 24; i++) {
+        for (int i = 0; i < (mMaxHour-mMinHour); i++) {
             float top = mHeaderTextHeight + mHeaderRowPadding * 2 + mCurrentOrigin.y + mHourHeight * i + mHeaderMarginBottom;
 
             // Draw the text if its y position is not outside of the visible area. The pivot point of the text is the point at the bottom-right corner.
-            String time = getDateTimeInterpreter().interpretTime(i);
+            String time = getDateTimeInterpreter().interpretTime(i+mMinHour);
             if (time == null)
                 throw new IllegalStateException("A DateTimeInterpreter must not return null time");
             if (top < getHeight()) canvas.drawText(time, mTimeTextWidth + mHeaderColumnPadding, top + mTimeTextHeight, mTimeTextPaint);
@@ -461,7 +463,7 @@ public class WeekView extends View {
 
             // Prepare the separator lines for hours.
             int i = 0;
-            for (int hourNumber = 0; hourNumber < 24; hourNumber++) {
+            for (int hourNumber = 0; hourNumber < mMaxHour-mMinHour; hourNumber++) {
                 float top = mHeaderTextHeight + mHeaderRowPadding * 2 + mCurrentOrigin.y + mHourHeight * hourNumber + mTimeTextHeight/2 + mHeaderMarginBottom;
                 if (top > mHeaderTextHeight + mHeaderRowPadding * 2 + mTimeTextHeight/2 + mHeaderMarginBottom - mHourSeparatorHeight && top < getHeight() && startPixel + mWidthPerDay - start > 0){
                     hourLines[i * 4] = start;
@@ -860,6 +862,7 @@ public class WeekView extends View {
                     EventRect eventRect = column.get(i);
                     eventRect.width = 1f / columns.size();
                     eventRect.left = j / columns.size();
+
                     eventRect.top = eventRect.event.getStartTime().get(Calendar.HOUR_OF_DAY) * 60 + eventRect.event.getStartTime().get(Calendar.MINUTE);
                     eventRect.bottom = eventRect.event.getEndTime().get(Calendar.HOUR_OF_DAY) * 60 + eventRect.event.getEndTime().get(Calendar.MINUTE);
                     mEventRects.add(eventRect);
@@ -937,6 +940,23 @@ public class WeekView extends View {
     //      Functions related to setting and getting the properties.
     //
     /////////////////////////////////////////////////////////////////
+
+
+    public int getmMinHour() {
+        return mMinHour;
+    }
+
+    public void setmMinHour(int mMinHour) {
+        this.mMinHour = mMinHour;
+    }
+
+    public int getmMaxHour() {
+        return mMaxHour;
+    }
+
+    public void setmMaxHour(int mMaxHour) {
+        this.mMaxHour = mMaxHour;
+    }
 
     public void setOnEventClickListener (EventClickListener listener) {
         this.mEventClickListener = listener;
@@ -1417,20 +1437,20 @@ public class WeekView extends View {
 
     /**
      * Vertically scroll to a specific hour in the week view.
-     * @param hour The hour to scroll to in 24-hour format. Supported values are 0-24.
+     * @param hour The hour to scroll to in 24-hour format. Supported values are mMinHour - mMaxHour.
      */
     public void goToHour(double hour){
         int verticalOffset = (int) (mHourHeight * hour);
-        if (hour < 0)
+        if (hour < mMinHour)
             verticalOffset = 0;
-        else if (hour > 24)
-            verticalOffset = mHourHeight * 24;
+        else if (hour > mMaxHour)
+            verticalOffset = mHourHeight * (mMaxHour-mMinHour);
 
         if (mAreDimensionsInvalid) {
             mScrollToHour = hour;
             return;
-        } else if (verticalOffset > mHourHeight * 24 - getHeight() + mHeaderTextHeight + mHeaderRowPadding * 2 + mHeaderMarginBottom)
-            verticalOffset = (int)(mHourHeight * 24 - getHeight() + mHeaderTextHeight + mHeaderRowPadding * 2 + mHeaderMarginBottom);
+        } else if (verticalOffset > mHourHeight * (mMaxHour-mMinHour) - getHeight() + mHeaderTextHeight + mHeaderRowPadding * 2 + mHeaderMarginBottom)
+            verticalOffset = (int)(mHourHeight * (mMaxHour-mMinHour) - getHeight() + mHeaderTextHeight + mHeaderRowPadding * 2 + mHeaderMarginBottom);
 
         mCurrentOrigin.y = -verticalOffset;
         invalidate();
