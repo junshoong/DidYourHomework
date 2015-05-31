@@ -3,6 +3,7 @@ package net.harvey.didyourhomework;
 import android.graphics.RectF;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -64,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         // Get a reference for the week view in the layout.
         mWeekView = (WeekView) findViewById(R.id.weekView);
+        mWeekView.setStartTime(9);
+        mWeekView.setEndTime(19);
 
         // Set an action when any event is clicked.
         mWeekView.setOnEventClickListener(mEventClickListener);
