@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public String interpretTime(int hour) {
-                return hour > 11 ? (hour - 12) + " PM" : (hour == 0 ? "12 AM" : hour + " AM");
+                return hour > 12 ? (hour - 12) + " PM" : (hour == 0 ? "12 AM" : (hour == 12 ? "12 PM": hour + " AM"));
             }
         });
     }
