@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
         // Get a reference for the week view in the layout.
         mWeekView = (WeekView) findViewById(R.id.weekView);
         mWeekView.setStartTime(9);
-        mWeekView.setEndTime(19);
+        mWeekView.setEndTime(18);
 
         // Set an action when any event is clicked.
         mWeekView.setOnEventClickListener(mEventClickListener);

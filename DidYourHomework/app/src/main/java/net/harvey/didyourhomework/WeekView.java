@@ -158,7 +158,7 @@ public class WeekView extends View {
                 if (scrollMaxY > 0) {
                     scrollMaxY = 0;
                 }
-                Log.d("fling", "endTime : " + endTime + " / startTime : " + startTime + " / maxY : " + (int) scrollMaxY);
+//                Log.d("fling", "endTime : " + endTime + " / startTime : " + startTime + " / maxY : " + (int) scrollMaxY);
                 mScroller.fling(0, (int) mCurrentOrigin.y, 0, (int) velocityY, 0, 0, (int) scrollMaxY, 0);
             }
 
@@ -397,11 +397,11 @@ public class WeekView extends View {
                         maxY = 0;
                     }
                     mCurrentOrigin.y = maxY;
-                    Log.d("currentOriginy", "originY : " + mCurrentOrigin.y);
+//                    Log.d("currentOriginy", "originY : " + mCurrentOrigin.y);
                 }
                 else {
                     mCurrentOrigin.y -= mDistanceY;
-                    Log.d("currentOriginy", "originY : " + mCurrentOrigin.y);
+//                    Log.d("currentOriginy", "originY : " + mCurrentOrigin.y);
                 }
             }
         }
@@ -503,11 +503,12 @@ public class WeekView extends View {
             // Draw background color for each day.
             float start = (startPixel < mHeaderColumnWidth ? mHeaderColumnWidth : startPixel);
             if (mWidthPerDay + startPixel - start > 0)
-                canvas.drawRect(start, mHeaderTextHeight + mHeaderRowPadding * 2 + mTimeTextHeight / 2 + mHeaderMarginBottom, startPixel + mWidthPerDay, getHeight(), sameDay ? mTodayBackgroundPaint : mDayBackgroundPaint);
+                canvas.drawRect(start, mHeaderTextHeight + mHeaderRowPadding * 2 + mTimeTextHeight / 2 + mHeaderMarginBottom, startPixel + mWidthPerDay, mHourHeight * (endTime - startTime) + mHeaderTextHeight + mHeaderRowPadding * 2 + mTimeTextHeight / 2 + mHeaderMarginBottom, sameDay ? mTodayBackgroundPaint : mDayBackgroundPaint);
+
 
             // Prepare the separator lines for hours.
             int i = 0;
-            for (int hourNumber = 0; hourNumber < endTime - startTime; hourNumber++) {
+            for (int hourNumber = 0; hourNumber <= endTime - startTime; hourNumber++) {
                 float top = mHeaderTextHeight + mHeaderRowPadding * 2 + mCurrentOrigin.y + mHourHeight * hourNumber + mTimeTextHeight / 2 + mHeaderMarginBottom;
                 if (top > mHeaderTextHeight + mHeaderRowPadding * 2 + mTimeTextHeight / 2 + mHeaderMarginBottom - mHourSeparatorHeight && top < getHeight() && startPixel + mWidthPerDay - start > 0) {
                     hourLines[i * 4] = start;
@@ -911,8 +912,8 @@ public class WeekView extends View {
                     EventRect eventRect = column.get(i);
                     eventRect.width = 1f / columns.size();
                     eventRect.left = j / columns.size();
-                    eventRect.top = eventRect.event.getStartTime().get(Calendar.HOUR_OF_DAY) * 60 + eventRect.event.getStartTime().get(Calendar.MINUTE);
-                    eventRect.bottom = eventRect.event.getEndTime().get(Calendar.HOUR_OF_DAY) * 60 + eventRect.event.getEndTime().get(Calendar.MINUTE);
+                    eventRect.top = (eventRect.event.getStartTime().get(Calendar.HOUR_OF_DAY)-startTime) * 60 + eventRect.event.getStartTime().get(Calendar.MINUTE);
+                    eventRect.bottom = (eventRect.event.getEndTime().get(Calendar.HOUR_OF_DAY)-startTime) * 60 + eventRect.event.getEndTime().get(Calendar.MINUTE);
                     mEventRects.add(eventRect);
                 }
                 j++;
@@ -1303,8 +1304,8 @@ public class WeekView extends View {
      * <b>Note:</b> Use {@link #setDateTimeInterpreter(DateTimeInterpreter)} instead.
      * </p>
      *
-     * @param length Supported values are {@link com.alamkanak.weekview.WeekView#LENGTH_SHORT} and
-     *               {@link com.alamkanak.weekview.WeekView#LENGTH_LONG}.
+     * @param length Supported values are {@link net.harvey.didyourhomework.WeekView#LENGTH_SHORT} and
+     *               {@link net.harvey.didyourhomework.WeekView#LENGTH_LONG}.
      */
     @Deprecated
     public void setDayNameLength(int length) {
