@@ -1,5 +1,10 @@
 package net.harvey.didyourhomework;
 
+//DB control
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+
 import android.graphics.RectF;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +21,7 @@ import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
+
     private static final int TYPE_WEEK_VIEW = 1;
     private static final int PREV = 1;
     private static final int THIS = 2;
@@ -24,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private WeekView mWeekView;
     private Calendar week = Calendar.getInstance();
     private ArrayList<WeekViewEvent> getEvents= new ArrayList<WeekViewEvent>();
+//    private MySQLiteControl eventControlDB = new MySQLiteControl();
 
     WeekView.MonthChangeListener mMonthChangeListener = new WeekView.MonthChangeListener() {
 
