@@ -16,11 +16,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.security.acl.Group;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -30,13 +30,11 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity {
 
 
-    private static final int TYPE_WEEK_VIEW = 1;
     private static final int PREV = 1;
     private static final int THIS = 2;
     private static final int NEXT = 3;
     private static final boolean LIST_VIEW = false;
     private boolean isListView = LIST_VIEW;
-    private int mWeekViewType = TYPE_WEEK_VIEW;
     private WeekView mWeekView;
     private Calendar week = Calendar.getInstance();
     private ArrayList<WeekViewEvent> getEvents = new ArrayList<WeekViewEvent>();
@@ -95,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
             Calendar endTime = (Calendar) startTime.clone();
             endTime.add(Calendar.HOUR, 2);
             endTime.set(Calendar.MONTH, newMonth - 1);
-            WeekViewEvent event = new WeekViewEvent(1, getEventTitle(startTime), startTime, endTime);
+            WeekViewEvent event = new WeekViewEvent(2, "이벤트2", startTime, endTime);
             getEvents.add(event);
         }
         return getEvents;
@@ -148,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
             // Set long press listener for events.
             mWeekView.setEventLongPressListener(mEventLongPressListener);
             changeWeek(0);
-            setupDateTimeInterpreter(false);
+//            setupDateTimeInterpreter(false);
 
         } else {
             if(isInitListView){
@@ -182,62 +180,63 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    private void setupDateTimeInterpreter(final boolean shortDate) {
-        mWeekView.setDateTimeInterpreter(new DateTimeInterpreter() {
-            @Override
-            public String interpretDate(Calendar date) {
-                SimpleDateFormat weekdayNameFormat = new SimpleDateFormat("EEE", Locale.getDefault());
-                String weekday = weekdayNameFormat.format(date.getTime());
-                SimpleDateFormat format = new SimpleDateFormat(" M/d", Locale.getDefault());
-
-                // All android api level do not have a standard way of getting the first letter of
-                // the week day name. Hence we get the first char programmatically.
-                // Details: http://stackoverflow.com/questions/16959502/get-one-letter-abbreviation-of-week-day-of-a-date-in-java#answer-16959657
-                if (shortDate)
-                    weekday = String.valueOf(weekday.charAt(0));
-                return weekday.toUpperCase() + format.format(date.getTime());
-            }
-
-            @Override
-            public String interpretTime(int hour) {
-                return hour > 12 ? (hour - 12) + " PM" : (hour == 0 ? "12 AM" : (hour == 12 ? "12 PM" : hour + " AM"));
-            }
-        });
-    }
+//    private void setupDateTimeInterpreter(final boolean shortDate) {
+//        mWeekView.setDateTimeInterpreter(new DateTimeInterpreter() {
+//            @Override
+//            public String interpretDate(Calendar date) {
+//                SimpleDateFormat weekdayNameFormat = new SimpleDateFormat("EEE", Locale.getDefault());
+//                String weekday = weekdayNameFormat.format(date.getTime());
+//                SimpleDateFormat format = new SimpleDateFormat(" M/d", Locale.getDefault());
+//
+//                // All android api level do not have a standard way of getting the first letter of
+//                // the week day name. Hence we get the first char programmatically.
+//                // Details: http://stackoverflow.com/questions/16959502/get-one-letter-abbreviation-of-week-day-of-a-date-in-java#answer-16959657
+//                if (shortDate)
+//                    weekday = String.valueOf(weekday.charAt(0));
+//                return weekday.toUpperCase() + format.format(date.getTime());
+//            }
+//
+//            @Override
+//            public String interpretTime(int hour) {
+//                return hour > 12 ? (hour - 12) + " PM" : (hour == 0 ? "12 AM" : (hour == 12 ? "12 PM" : hour + " AM"));
+//            }
+//        });
+//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        setupDateTimeInterpreter(id == R.id.action_today);
+//        setupDateTimeInterpreter(id == R.id.action_today);
         switch (id) {
             case R.id.action_today:
-                if (mWeekViewType != TYPE_WEEK_VIEW) {
-                    item.setChecked(!item.isChecked());
-                    mWeekViewType = TYPE_WEEK_VIEW;
-                }
                 changeWeek(THIS);
                 return true;
             case R.id.action_next_week:
-                if (mWeekViewType != TYPE_WEEK_VIEW) {
-                    item.setChecked(!item.isChecked());
-                    mWeekViewType = TYPE_WEEK_VIEW;
-                }
                 changeWeek(NEXT);
                 return true;
             case R.id.action_prev_week:
-                if (mWeekViewType != TYPE_WEEK_VIEW) {
-                    item.setChecked(!item.isChecked());
-                    mWeekViewType = TYPE_WEEK_VIEW;
-                }
                 changeWeek(PREV);
                 return true;
             case R.id.change_view:
                 isListView=!isListView;
+                toggleMenu();
                 initView();
                 return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void toggleMenu() {
+        if(!isListView){
+            findViewById(R.id.action_prev_week).setVisibility(View.VISIBLE);
+            findViewById(R.id.action_today).setVisibility(View.VISIBLE);
+            findViewById(R.id.action_next_week).setVisibility(View.VISIBLE);
+        } else {
+            findViewById(R.id.action_prev_week).setVisibility(View.GONE);
+            findViewById(R.id.action_today).setVisibility(View.GONE);
+            findViewById(R.id.action_next_week).setVisibility(View.GONE);
+        }
     }
 
     private String getEventTitle(Calendar time) {
@@ -282,5 +281,7 @@ public class MainActivity extends AppCompatActivity {
             return view;
         }
     }
+
+
 
 }
