@@ -3,4 +3,5 @@
     <string name="action_today">Today</string>
     <string name="next_week">NEXT</string>
     <string name="prev_week">PREV</string>
+    <string name="change_view">View</string>
 </resources>

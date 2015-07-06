@@ -2,6 +2,7 @@ package net.harvey.didyourhomework;
 
 //DB control
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -9,8 +10,15 @@ import android.graphics.RectF;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
@@ -26,18 +34,24 @@ public class MainActivity extends AppCompatActivity {
     private static final int PREV = 1;
     private static final int THIS = 2;
     private static final int NEXT = 3;
+    private static final boolean LIST_VIEW = false;
+    private boolean isListView = LIST_VIEW;
     private int mWeekViewType = TYPE_WEEK_VIEW;
     private WeekView mWeekView;
     private Calendar week = Calendar.getInstance();
-    private ArrayList<WeekViewEvent> getEvents= new ArrayList<WeekViewEvent>();
+    private ArrayList<WeekViewEvent> getEvents = new ArrayList<WeekViewEvent>();
+
+    private ListView listView;
+    private CustomAdapter adapter;
 //    private MySQLiteControl eventControlDB = new MySQLiteControl();
+
 
     WeekView.MonthChangeListener mMonthChangeListener = new WeekView.MonthChangeListener() {
 
         @Override
         public ArrayList<WeekViewEvent> onMonthChange(int newYear, int newMonth) {
             // Populate the week view with some events.
-            ArrayList<WeekViewEvent> events = getMonthEvent(newYear,newMonth);
+            ArrayList<WeekViewEvent> events = getMonthEvent(newYear, newMonth);
 //
 //            Calendar startTime = Calendar.getInstance();
 //            startTime.set(Calendar.HOUR_OF_DAY, 13);
@@ -53,18 +67,33 @@ public class MainActivity extends AppCompatActivity {
             return events;
         }
     };
+    private boolean isInitWeekView;
+    private boolean isInitListView;
 
     private ArrayList<WeekViewEvent> getMonthEvent(int newYear, int newMonth) {
         getEvents.clear();
-        if(newYear == 2015 && newMonth == 6){
+        if (newYear == 2015 && newMonth == 7) {
             Calendar startTime = Calendar.getInstance();
             startTime.set(Calendar.HOUR_OF_DAY, 13);
             startTime.set(Calendar.MINUTE, 00);
-            startTime.set(Calendar.DAY_OF_MONTH,1);
+            startTime.set(Calendar.DAY_OF_MONTH, 6);
             startTime.set(Calendar.MONTH, newMonth - 1);
             startTime.set(Calendar.YEAR, newYear);
             Calendar endTime = (Calendar) startTime.clone();
             endTime.add(Calendar.HOUR, 1);
+            endTime.set(Calendar.MONTH, newMonth - 1);
+            WeekViewEvent event = new WeekViewEvent(1, getEventTitle(startTime), startTime, endTime);
+            getEvents.add(event);
+        }
+        if (newYear == 2015 && newMonth == 8) {
+            Calendar startTime = Calendar.getInstance();
+            startTime.set(Calendar.HOUR_OF_DAY, 13);
+            startTime.set(Calendar.MINUTE, 00);
+            startTime.set(Calendar.DAY_OF_MONTH, 5);
+            startTime.set(Calendar.MONTH, newMonth - 1);
+            startTime.set(Calendar.YEAR, newYear);
+            Calendar endTime = (Calendar) startTime.clone();
+            endTime.add(Calendar.HOUR, 2);
             endTime.set(Calendar.MONTH, newMonth - 1);
             WeekViewEvent event = new WeekViewEvent(1, getEventTitle(startTime), startTime, endTime);
             getEvents.add(event);
@@ -89,21 +118,61 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        // Get a reference for the week view in the layout.
-        mWeekView = (WeekView) findViewById(R.id.weekView);
-        mWeekView.setStartTime(9);
-        mWeekView.setEndTime(18);
 
-        // Set an action when any event is clicked.
-        mWeekView.setOnEventClickListener(mEventClickListener);
-        // The week view has infinite scrolling horizontally. We have to provide the events of a
-        // month every time the month changes on the week view.
-        mWeekView.setMonthChangeListener(mMonthChangeListener);
-        // Set long press listener for events.
-        mWeekView.setEventLongPressListener(mEventLongPressListener);
-        changeWeek(0);
-        setupDateTimeInterpreter(false);
+        setContentView(R.layout.activity_main);
+
+        mWeekView = (WeekView) findViewById(R.id.weekView);
+        listView = (ListView) findViewById(R.id.list_view);
+        initView();
+    }
+
+    private void initView() {
+
+        toggleView();
+
+        if(!isListView) {
+            if(isInitWeekView){
+                return;
+            }
+            isInitWeekView = true;
+            // Get a reference for the week view in the layout.
+
+            mWeekView.setStartTime(9);
+            mWeekView.setEndTime(18);
+
+            // Set an action when any event is clicked.
+            mWeekView.setOnEventClickListener(mEventClickListener);
+            // The week view has infinite scrolling horizontally. We have to provide the events of a
+            // month every time the month changes on the week view.
+            mWeekView.setMonthChangeListener(mMonthChangeListener);
+            // Set long press listener for events.
+            mWeekView.setEventLongPressListener(mEventLongPressListener);
+            changeWeek(0);
+            setupDateTimeInterpreter(false);
+
+        } else {
+            if(isInitListView){
+                return;
+            }
+            isInitListView = true;
+
+            adapter = new CustomAdapter(this, R.layout.item_worklist);
+
+            listView.setAdapter(adapter);
+
+            adapter.addAll(getMonthEvent(2015, 7));
+            adapter.addAll(getMonthEvent(2015, 8));
+        }
+    }
+
+    private void toggleView() {
+        if(!isListView){
+            mWeekView.setVisibility(View.VISIBLE);
+            listView.setVisibility(View.GONE);
+        } else {
+            mWeekView.setVisibility(View.GONE);
+            listView.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -131,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public String interpretTime(int hour) {
-                return hour > 12 ? (hour - 12) + " PM" : (hour == 0 ? "12 AM" : (hour == 12 ? "12 PM": hour + " AM"));
+                return hour > 12 ? (hour - 12) + " PM" : (hour == 0 ? "12 AM" : (hour == 12 ? "12 PM" : hour + " AM"));
             }
         });
     }
@@ -162,6 +231,10 @@ public class MainActivity extends AppCompatActivity {
                 }
                 changeWeek(PREV);
                 return true;
+            case R.id.change_view:
+                isListView=!isListView;
+                initView();
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -186,5 +259,28 @@ public class MainActivity extends AppCompatActivity {
         week.set(week.DAY_OF_WEEK, Calendar.MONDAY);
         mWeekView.goToDate(week);
     }
-}
 
+    private class CustomAdapter extends ArrayAdapter<WeekViewEvent> {
+        private int viewResource;
+
+        public CustomAdapter(Context context, int resource) {
+            super(context, resource);
+            viewResource = resource;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            //view
+            View view = LayoutInflater.from(getContext()).inflate(viewResource, parent, false);
+            TextView textView = (TextView) view.findViewById(R.id.event_view_name);
+            //data
+            WeekViewEvent event = getItem(position);
+
+//            checkBox.setVisibility(option.isGroupName() ? View.GONE : View.VISIBLE);
+            textView.setText(event.getName());
+
+            return view;
+        }
+    }
+
+}
