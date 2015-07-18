@@ -6,5 +6,13 @@
     <string name="change_view">View</string>
     <string name="add_event">Add</string>
     <string name="event_name">event name</string>
-    <string name="event_content">content</string>
+    <string name="event_detail">detail</string>
+    <string-array name="repeat_list">
+        <item>NONE</item>
+        <item>DAYLY</item>
+        <item>WEEKLY</item>
+        <item>MONTHLY(weekday)</item>
+        <item>MONTHLY(date)</item>
+        <item>YEARLY</item>
+    </string-array>
 </resources>
