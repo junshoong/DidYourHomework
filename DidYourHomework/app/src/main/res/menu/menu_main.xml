@@ -17,4 +17,8 @@
         android:title="@string/change_view"
         android:orderInCategory="5"
         app:showAsAction="always"/>
+    <item android:id="@+id/add_event"
+        android:title="@string/add_event"
+        android:orderInCategory="5"
+        app:showAsAction="always"/>
 </menu>

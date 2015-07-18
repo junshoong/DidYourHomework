@@ -1,7 +1,10 @@
 <resources>
-    <string name="app_name">Did Your Homework?</string>
+    <string name="app_name">Homework</string>
     <string name="action_today">Today</string>
     <string name="next_week"><![CDATA[>>]]></string>
     <string name="prev_week"><![CDATA[<<]]></string>
     <string name="change_view">View</string>
+    <string name="add_event">Add</string>
+    <string name="event_name">event name</string>
+    <string name="event_content">content</string>
 </resources>

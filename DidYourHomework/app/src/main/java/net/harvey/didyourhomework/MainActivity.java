@@ -1,8 +1,10 @@
 package net.harvey.didyourhomework;
 
 //DB control
+import android.app.Instrumentation;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -179,7 +181,6 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
-
 //    private void setupDateTimeInterpreter(final boolean shortDate) {
 //        mWeekView.setDateTimeInterpreter(new DateTimeInterpreter() {
 //            @Override
@@ -222,9 +223,29 @@ public class MainActivity extends AppCompatActivity {
                 toggleMenu();
                 initView();
                 return true;
-        }
+            case R.id.add_event:
+                addEvent();
+                return true;
 
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void addEvent() {
+        Intent intent = new Intent(this,AddEventActivity.class);
+        startActivityForResult(intent,99);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode ==RESULT_OK){
+            switch (requestCode){
+                case 99:
+
+                    break;
+            }
+        }
     }
 
     private void toggleMenu() {
@@ -238,6 +259,11 @@ public class MainActivity extends AppCompatActivity {
             findViewById(R.id.action_next_week).setVisibility(View.GONE);
         }
     }
+
+
+
+
+
 
     private String getEventTitle(Calendar time) {
         return String.format("Event of %02d:%02d %s/%d", time.get(Calendar.HOUR_OF_DAY), time.get(Calendar.MINUTE), time.get(Calendar.MONTH) + 1, time.get(Calendar.DAY_OF_MONTH));
