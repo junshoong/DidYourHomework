@@ -8,18 +8,39 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:hint="@string/event_name"/>
-
-    <Button
-        android:id="@+id/start_time"
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        />
+        android:layout_height="50dp">
+        <Button
+            android:id="@+id/start_date"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="50dp" />
+        <Button
+            android:id="@+id/start_time"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="50dp" />
 
-    <Button
-        android:id="@+id/end_time"
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="50dp" />
+        android:layout_height="50dp">
+        <Button
+            android:id="@+id/end_date"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="50dp" />
+        <Button
+            android:id="@+id/end_time"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="50dp" />
 
+    </LinearLayout>
     <Spinner
         android:id="@+id/repeat_schedule"
         android:layout_width="match_parent"
