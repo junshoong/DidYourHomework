@@ -10,6 +10,7 @@
     import android.widget.DatePicker;
     import android.widget.EditText;
     import android.widget.Spinner;
+    import android.widget.TimePicker;
 
     /**
      * Created by junsu on 15. 7. 18.
@@ -49,8 +50,8 @@
                 public void onClick(View v) {
                     DatePickerFragment dialogFragment = new DatePickerFragment() {
                         @Override
-                        public void onDateSet (DatePicker view, int year, int month, int day) {
-                            startDate.setText(year + "-" + (month+1) + "-" + day);
+                        public void onDateSet(DatePicker view, int year, int month, int day) {
+                            startDate.setText(year + "-" + (month + 1) + "-" + day);
                         }
                     };
                     dialogFragment.show(fm, "datePicker");
@@ -59,21 +60,36 @@
             startTime.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    TimePickerFragment dialogFragment = new TimePickerFragment();
+                    TimePickerFragment dialogFragment = new TimePickerFragment() {
+                        @Override
+                        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                            startTime.setText(hourOfDay + " : " + minute);
+                        }
+                    };
                     dialogFragment.show(fm, "timePicker");
                 }
             });
             endDate.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    DatePickerFragment dialogFragment = new DatePickerFragment();
+                    DatePickerFragment dialogFragment = new DatePickerFragment() {
+                        @Override
+                        public void onDateSet (DatePicker view, int year, int month, int day) {
+                            endDate.setText(year + "-" + (month+1) + "-" + day);
+                        }
+                    };
                     dialogFragment.show(fm, "datePicker");
                 }
             });
             endTime.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    TimePickerFragment dialogFragment = new TimePickerFragment();
+                    TimePickerFragment dialogFragment = new TimePickerFragment(){
+                        @Override
+                        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                            endTime.setText(hourOfDay + " : " + minute);
+                        }
+                    };
                     dialogFragment.show(fm, "timePicker");
                 }
             });
