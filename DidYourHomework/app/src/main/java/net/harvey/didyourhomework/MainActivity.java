@@ -43,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
 
     private ListView listView;
     private CustomAdapter adapter;
-//    private MySQLiteControl eventControlDB = new MySQLiteControl();
 
 
     WeekView.MonthChangeListener mMonthChangeListener = new WeekView.MonthChangeListener() {
