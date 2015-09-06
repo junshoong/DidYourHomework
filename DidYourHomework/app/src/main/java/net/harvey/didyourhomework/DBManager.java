@@ -23,7 +23,12 @@ public class DBManager extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE EVENT_LIST(" +
                 " _id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 " name TEXT," +
-                " price INTEGER);");
+                " start TEXT," +
+                " end TEXT," +
+                " detail TEXT," +
+                " repeat INTEGER," +
+                " test INTEGER," +
+                " homework INTEGER);");
     }
 
     @Override
@@ -52,16 +57,20 @@ public class DBManager extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
         String str = "";
 
-        Cursor cursor = db.rawQuery("select * from FOOD_LIST", null);
+        Cursor cursor = db.rawQuery("select * from EVENT_LIST", null);
         while(cursor.moveToNext()) {
-            str += cursor.getInt(0)
-                    + " : foodName "
-                    + cursor.getString(1)
-                    + ", price = "
-                    + cursor.getInt(2)
+            str += cursor.getInt(1)
+                    + " "
+                    + cursor.getString(2)
+                    + " ~ "
+                    + cursor.getInt(3)
+                    + ", detail : "
+                    + cursor.getInt(4)
                     + "\n";
         }
 
         return str;
     }
+
+//    public
 }

@@ -31,7 +31,6 @@ import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
-
     private static final int PREV = 1;
     private static final int THIS = 2;
     private static final int NEXT = 3;
@@ -69,34 +68,36 @@ public class MainActivity extends AppCompatActivity {
     private boolean isInitWeekView;
     private boolean isInitListView;
 
+
+
     private ArrayList<WeekViewEvent> getMonthEvent(int newYear, int newMonth) {
-        getEvents.clear();
-        if (newYear == 2015 && newMonth == 7) {
-            Calendar startTime = Calendar.getInstance();
-            startTime.set(Calendar.HOUR_OF_DAY, 13);
-            startTime.set(Calendar.MINUTE, 00);
-            startTime.set(Calendar.DAY_OF_MONTH, 6);
-            startTime.set(Calendar.MONTH, newMonth - 1);
-            startTime.set(Calendar.YEAR, newYear);
-            Calendar endTime = (Calendar) startTime.clone();
-            endTime.add(Calendar.HOUR, 1);
-            endTime.set(Calendar.MONTH, newMonth - 1);
-            WeekViewEvent event = new WeekViewEvent(1, getEventTitle(startTime), startTime, endTime);
-            getEvents.add(event);
-        }
-        if (newYear == 2015 && newMonth == 8) {
-            Calendar startTime = Calendar.getInstance();
-            startTime.set(Calendar.HOUR_OF_DAY, 13);
-            startTime.set(Calendar.MINUTE, 00);
-            startTime.set(Calendar.DAY_OF_MONTH, 5);
-            startTime.set(Calendar.MONTH, newMonth - 1);
-            startTime.set(Calendar.YEAR, newYear);
-            Calendar endTime = (Calendar) startTime.clone();
-            endTime.add(Calendar.HOUR, 2);
-            endTime.set(Calendar.MONTH, newMonth - 1);
-            WeekViewEvent event = new WeekViewEvent(2, "이벤트2", startTime, endTime);
-            getEvents.add(event);
-        }
+//        getEvents.clear();
+//        if (newYear == 2015 && newMonth == 7) {
+//            Calendar startTime = Calendar.getInstance();
+//            startTime.set(Calendar.HOUR_OF_DAY, 13);
+//            startTime.set(Calendar.MINUTE, 00);
+//            startTime.set(Calendar.DAY_OF_MONTH, 6);
+//            startTime.set(Calendar.MONTH, newMonth - 1);
+//            startTime.set(Calendar.YEAR, newYear);
+//            Calendar endTime = (Calendar) startTime.clone();
+//            endTime.add(Calendar.HOUR, 1);
+//            endTime.set(Calendar.MONTH, newMonth - 1);
+//            WeekViewEvent event = new WeekViewEvent(1, getEventTitle(startTime), startTime, endTime);
+//            getEvents.add(event);
+//        }
+//        if (newYear == 2015 && newMonth == 8) {
+//            Calendar startTime = Calendar.getInstance();
+//            startTime.set(Calendar.HOUR_OF_DAY, 13);
+//            startTime.set(Calendar.MINUTE, 00);
+//            startTime.set(Calendar.DAY_OF_MONTH, 5);
+//            startTime.set(Calendar.MONTH, newMonth - 1);
+//            startTime.set(Calendar.YEAR, newYear);
+//            Calendar endTime = (Calendar) startTime.clone();
+//            endTime.add(Calendar.HOUR, 2);
+//            endTime.set(Calendar.MONTH, newMonth - 1);
+//            WeekViewEvent event = new WeekViewEvent(2, "이벤트2", startTime, endTime);
+//            getEvents.add(event);
+//        }
         return getEvents;
     }
 
@@ -117,11 +118,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        final DBManager dbManager = new DBManager(getApplicationContext(), "Event.db", null, 1);
 
         setContentView(R.layout.activity_main);
 
         mWeekView = (WeekView) findViewById(R.id.weekView);
         listView = (ListView) findViewById(R.id.list_view);
+
         initView();
     }
 
@@ -232,7 +235,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void addEvent() {
         Intent intent = new Intent(this,AddEventActivity.class);
-        startActivityForResult(intent,99);
+        startActivityForResult(intent, 99);
     }
 
     @Override

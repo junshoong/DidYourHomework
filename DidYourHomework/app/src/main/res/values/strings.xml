@@ -21,4 +21,6 @@
     <string name="start_time">start time</string>
     <string name="end_date">end date</string>
     <string name="end_time">end time</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
 </resources>
